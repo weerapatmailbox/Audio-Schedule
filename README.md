@@ -125,10 +125,6 @@ build.cmd clean            :: ล้างไฟล์ชั่วคราว�
 
 ```text
 AudioSchedule/
-├── .agents/
-│   └── skills/
-│       ├── cpp-gui-dev/            # คำแนะนำการพัฒนา Win32 GUI สำหรับ AI Assistant
-│       └── audio-scheduler/        # คำแนะนำด้านระบบเล่นเสียงและการตั้งเวลา
 ├── src/
 │   ├── installer/                  # ซอร์สโค้ดระบบติดตั้งและถอนการติดตั้ง
 │   │   ├── Installer.cpp           # ตัวช่วยติดตั้ง (Setup Wizard) และโหมด Maintenance/Modify
@@ -159,7 +155,6 @@ AudioSchedule/
 ├── tools/
 │   ├── menu.cpp                    # เครื่องมือสร้างเมนูกดเลือกด้วยลูกศรใน Command Prompt
 │   └── packer.cpp                  # เครื่องมือรวมไฟล์ Payload สำหรับตัวติดตั้ง
-├── GEMINI.md                       # กฎและมาตรฐานการพัฒนาสำหรับโปรเจกต์
 ├── LICENSE                         # สัญญาอนุญาต MIT License
 ├── MANUAL.md                       # คู่มือการใช้งานโปรแกรมฉบับเต็มสำหรับผู้ใช้
 ├── build.cmd                       # สคริปต์คอมไพล์และแพ็กเกจอัตโนมัติ
