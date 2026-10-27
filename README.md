@@ -3,6 +3,8 @@
 โปรแกรม Desktop GUI บน Windows พัฒนาด้วยภาษา **Modern C++ (C++17)** และ **Native Win32 API / Windows Common Controls** สำหรับตั้งเวลาเล่นไฟล์เสียง (.mp3, .wav, .wma, .m4a) อัตโนมัติตามกำหนดการ พร้อมระบบจัดการชุดข้อมูล (Presets), ระบบทำงานเบื้องหลังบนถาดระบบ (System Tray), การป้องกันการเปิดโปรแกรมซ้ำ (Single Instance), และตัวติดตั้งแบบมาตรฐาน Windows ที่รองรับการแก้ไข/ติดตั้งใหม่ (Maintenance & Modify)
 
 ---
+![Audio Schedule Screenshot](assets/screenshot.png))
+---
 
 ## ฟังก์ชันการทำงานหลัก (Key Features)
 
