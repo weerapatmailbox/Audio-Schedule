@@ -1,4 +1,4 @@
-﻿# Audio Schedule (ระบบตั้งเวลาและเล่นไฟล์เสียงอัตโนมัติ)
+# Audio Schedule (ระบบตั้งเวลาและเล่นไฟล์เสียงอัตโนมัติ)
 
 โปรแกรม Desktop GUI บน Windows พัฒนาด้วยภาษา **Modern C++ (C++17)** และ **Native Win32 API / Windows Common Controls** สำหรับตั้งเวลาเล่นไฟล์เสียง (.mp3, .wav, .wma, .m4a) อัตโนมัติตามกำหนดการ พร้อมระบบจัดการชุดข้อมูล (Presets), ระบบทำงานเบื้องหลังบนถาดระบบ (System Tray), การป้องกันการเปิดโปรแกรมซ้ำ (Single Instance), และตัวติดตั้งแบบมาตรฐาน Windows ที่รองรับการแก้ไข/ติดตั้งใหม่ (Maintenance & Modify)
 
@@ -71,6 +71,89 @@
 
 ---
 
+## การติดตั้งคอมไพเลอร์ MinGW / LLVM-MinGW (Compiler Prerequisites & Setup Guide)
+
+โปรเจกต์ **Audio Schedule** พัฒนาด้วย **Modern C++ (C++17)** และเชื่อมโยงไลบรารี Win32 API แบบ Zero-Dependencies (`-static`) สามารถคอมไพล์ได้ทั้งแบบ 64-bit (`x86_64`) และ 32-bit (`x86`)
+
+ชุดคอมไพเลอร์ที่ **แนะนำเป็นพิเศษสำหรับโปรเจกต์นี้** คือ **[LLVM-MinGW โดย Martin Storsjo](https://github.com/mstorsjo/llvm-mingw)**
+
+### ทำไมจึงแนะนำ LLVM-MinGW?
+1. **ครบจบในแพ็กเกจเดียว (Dual Architecture In One)**: ภายในโฟลเดอร์เดียวมีทั้งคอมไพเลอร์ 64-bit (`x86_64-w64-mingw32-g++`), 32-bit (`i686-w64-mingw32-g++`), และ Resource Compiler (`windres`) ครบถ้วน ทำให้สร้างไฟล์ติดตั้งได้ทั้ง 2 สถาปัตยกรรมโดยไม่ต้องติดตั้ง MinGW 32-bit เพิ่มเติม
+2. **เป็นแบบพกพา ไม่ต้องติดตั้ง (Portable Standalone)**: เพียงแตกไฟล์ ZIP ก็พร้อมใช้งานทันที ไม่ต้องรันโปรแกรมติดตั้ง ไม่แตะต้อง Registry และไม่ต้องเชื่อมต่ออินเทอร์เน็ตระหว่างคอมไพล์
+3. **คอมไพเลอร์ Clang/LLVM ทันสมัย**: ใช้ Clang C++17/20 และ LLD Linker ประสิทธิภาพสูง คอมไพล์ได้รวดเร็วและไฟล์ไบนารีมีขนาดกะทัดรัด
+
+---
+
+### แหล่งดาวน์โหลด (Download Source)
+- **คลังโครงการอย่างเป็นทางการ (GitHub)**: [https://github.com/mstorsjo/llvm-mingw](https://github.com/mstorsjo/llvm-mingw)
+- **หน้าดาวน์โหลด Releases ล่าสุด**: [https://github.com/mstorsjo/llvm-mingw/releases](https://github.com/mstorsjo/llvm-mingw/releases)
+
+#### คำแนะนำการเลือกไฟล์ดาวน์โหลด:
+| ไฟล์ที่แนะนำ | เหมาะสำหรับ | รายละเอียด |
+| :--- | :--- | :--- |
+| **`llvm-mingw-<version>-ucrt-x86_64.zip`** *(แนะนำที่สุด)* | Windows 10 / Windows 11 (64-bit) | ใช้รันไทม์ UCRT มาตรฐานของ Windows สมัยใหม่ มีประสิทธิภาพสูงสุด |
+| **`llvm-mingw-<version>-msvcrt-x86_64.zip`** | รองรับย้อนหลัง Windows XP / Vista / 7 / 8 / 10 / 11 | ใช้ MSVCRT ดั้งเดิม สามารถคอมไพล์โปรแกรมให้ทำงานบนระบบปฏิบัติการรุ่นเก่าได้ |
+
+---
+
+### ขั้นตอนการติดตั้งทีละสเต็ป (Step-by-Step Installation)
+
+#### ขั้นตอนที่ 1: ดาวน์โหลดไฟล์ ZIP
+1. เข้าไปที่หน้า Releases: [https://github.com/mstorsjo/llvm-mingw/releases](https://github.com/mstorsjo/llvm-mingw/releases)
+2. เลื่อนลงมาที่หัวข้อ **Assets** ของเวอร์ชันล่าสุด
+3. คลิกดาวน์โหลดไฟล์ เช่น `llvm-mingw-xxxx-ucrt-x86_64.zip`
+
+#### ขั้นตอนที่ 2: แตกไฟล์ ZIP (Extract)
+1. นำไฟล์ ZIP ที่ดาวน์โหลดมา แตกไฟล์ (Extract All) ไปยังตำแหน่งที่ต้องการ เช่น:
+   - `C:\llvm-mingw`
+   - หรือไว้ในโฟลเดอร์โปรเจกต์: `toolchain\llvm-mingw` (โฟลเดอร์ `toolchain/` ถูกละเว้นใน `.gitignore`)
+2. ตรวจสอบให้แน่ใจว่ามีโฟลเดอร์ `bin` ภายใน (เช่น `C:\llvm-mingw\bin`) ซึ่งจะมีไฟล์คอมไพเลอร์ต่างๆ อยู่ครบถ้วน
+
+#### ขั้นตอนที่ 3: กำหนดค่าเพื่อใช้งาน (เลือกวิธีใดวิธีหนึ่ง)
+
+##### วิธี A: ให้ระบบ `build.cmd` ตรวจจับอัตโนมัติ (สะดวกที่สุด - แนะนำ)
+- หากแตกไฟล์ไว้ที่ `C:\llvm-mingw`, `D:\llvm-mingw` หรือในโฟลเดอร์ `toolchain\llvm-mingw` สคริปต์ `build.cmd` จะตรวจพบและเชื่อมโยงคอมไพเลอร์ทั้ง 64-bit และ 32-bit ให้อัตโนมัติทันที
+- หรือสร้างไฟล์ `build.local.bat` ในโฟลเดอร์โปรเจกต์ แล้วระบุพาธ:
+  ```cmd
+  set "LLVM_MINGW_BIN=C:\llvm-mingw\bin"
+  ```
+  *(หรือหากเปิดรัน `build.cmd` ครั้งแรกแล้วยังไม่พบคอมไพเลอร์ ระบบจะมีข้อความถามพาธ ให้คัดลอกพาธ เช่น `C:\llvm-mingw\bin` มาวาง แล้วระบบจะบันทึกลง `build.local.bat` ให้ถาวร)*
+
+##### วิธี B: เพิ่มโฟลเดอร์ bin เข้า Windows System PATH (สามารถเรียกใช้จาก Terminal ใดก็ได้)
+1. กดปุ่ม `Win + R` พิมพ์ `sysdm.cpl` แล้วกด `Enter`
+2. เลือกแท็บ **Advanced (ขั้นสูง)** -> คลิกปุ่ม **Environment Variables... (ตัวแปรสภาพแวดล้อม)**
+3. ในกล่อง **User variables** (หรือ **System variables**) ดับเบิลคลิกที่รายการ `Path`
+4. คลิกปุ่ม **New (สร้างใหม่)** แล้วพิมพ์พาธโฟลเดอร์ `bin` เช่น:
+   ```text
+   C:\llvm-mingw\bin
+   ```
+5. คลิก **OK** ทุกหน้าต่างเพื่อบันทึกการตั้งค่า
+
+##### วิธี C: ติดตั้งผ่าน Scoop (สำหรับผู้ใช้ Scoop Package Manager)
+```powershell
+scoop bucket add main
+scoop install llvm-mingw
+```
+
+---
+
+### การตรวจสอบความพร้อมของคอมไพเลอร์ (Verification)
+เปิด Command Prompt หรือ PowerShell แล้วทดสอบรันคำสั่งต่อไปนี้:
+
+```powershell
+# 1. ตรวจสอบคอมไพเลอร์ 64-bit
+x86_64-w64-mingw32-g++ --version
+
+# 2. ตรวจสอบคอมไพเลอร์ 32-bit
+i686-w64-mingw32-g++ --version
+
+# 3. ตรวจสอบ Resource Compiler
+x86_64-w64-mingw32-windres --version
+```
+หากระบบแสดงหมายเลขเวอร์ชันของ LLVM/Clang แสดงว่าพร้อมคอมไพล์โปรเจกต์ได้ทันที
+
+---
+
 ## วิธีการคอมไพล์และสร้างชุดติดตั้ง (Build System)
 
 โปรแกรมมาพร้อมระบบคอมไพล์และสร้างชุดติดตั้งอัตโนมัติผ่านไฟล์คำสั่ง `build.cmd` โดยมีเมนู Interactive ที่รองรับการเลื่อนลูกศร `[↑]` `[↓]` แล้วกด `[Enter]` เพื่อสั่งงานได้ทันที:
@@ -100,16 +183,17 @@
    - สร้างเฉพาะไฟล์ `.zip` พร้อมใช้งาน แตกไฟล์แล้วเปิดรันได้ทันทีบน Flash Drive โดยไม่แตะต้อง Registry
 
 ### การตรวจจับคอมไพเลอร์อัตโนมัติ (Toolchain Auto-Detection):
-ระบบ build.cmd ออกแบบให้สามารถทำงานได้บนทุกเครื่องทันทีโดยไม่ต้องแก้ไขสคริปต์ มีระบบค้นหาและเชื่อมโยง MinGW อัตโนมัติ:
+ระบบ build.cmd ออกแบบให้สามารถทำงานได้บนทุกเครื่องทันทีโดยไม่ต้องแก้ไขสคริปต์ มีระบบค้นหาและเชื่อมโยง MinGW / LLVM-MinGW อัตโนมัติ:
 1. **ค้นหาอัตโนมัติจากตำแหน่งมาตรฐานบน Windows**:
-   - ค้นหาจาก System PATH (g++, x86_64-w64-mingw32-g++, i686-w64-mingw32-g++)
-   - **MSYS2**: C:\msys64\mingw64\bin, ucrt64\bin, clang64\bin, mingw32\bin (รวมถึงไดรฟ์ D:\)
-   - **WinLibs / Standalone MinGW**: C:\winlibs\bin, C:\mingw64\bin, C:\mingw-w64\bin, C:\tools\mingw64\bin
-   - **Scoop**: %USERPROFILE%\scoop\apps\mingw\current\bin
+   - ค้นหาจาก System PATH (`x86_64-w64-mingw32-g++`, `i686-w64-mingw32-g++`, `g++`)
+   - **LLVM-MinGW (แนะนำ)**: `C:\llvm-mingw\bin`, `D:\llvm-mingw\bin`, `%USERPROFILE%\llvm-mingw\bin`, `%~dp0toolchain\llvm-mingw\bin`
+   - **MSYS2**: `C:\msys64\mingw64\bin`, `ucrt64\bin`, `clang64\bin`, `mingw32\bin` (รวมถึงไดรฟ์ `D:\`)
+   - **WinLibs / Standalone MinGW**: `C:\winlibs\bin`, `C:\mingw64\bin`, `C:\mingw-w64\bin`, `C:\tools\mingw64\bin`
+   - **Scoop**: `%USERPROFILE%\scoop\apps\llvm-mingw\current\bin`, `%USERPROFILE%\scoop\apps\mingw\current\bin`
 2. **รองรับการกำหนดพาธเฉพาะเครื่อง (Custom / Portable Toolchain)**:
-   - ผ่านตัวแปรสภาพแวดล้อม: set MINGW64_BIN=C:\path\to\bin
-   - หรือสร้างไฟล์ build.local.bat ในโฟลเดอร์โปรเจกต์ (ถูกเพิกเฉยใน .gitignore จึงไม่ถูกดันขึ้น Git)
-   - หากตรวจไม่พบคอมไพเลอร์ ระบบจะมีหน้าต่างถามและบันทึกพาธลงใน build.local.bat ให้อัตโนมัติในครั้งแรก
+   - ผ่านตัวแปรสภาพแวดล้อม: `set LLVM_MINGW_BIN=C:\path\to\bin` หรือ `set MINGW64_BIN=C:\path\to\bin`
+   - หรือสร้างไฟล์ `build.local.bat` ในโฟลเดอร์โปรเจกต์ (ถูกเพิกเฉยใน `.gitignore` จึงไม่ถูกดันขึ้น Git)
+   - หากตรวจไม่พบคอมไพเลอร์ ระบบจะมีหน้าต่างถามและบันทึกพาธลงใน `build.local.bat` ให้อัตโนมัติในครั้งแรก
 
 ### การสั่งงานผ่าน Command Line:
 ```cmd
